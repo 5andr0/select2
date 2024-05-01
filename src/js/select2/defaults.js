@@ -100,6 +100,11 @@ define([
           Tokenizer
         );
       }
+
+      options.dataAdapter = this._decorateAdapter(
+        options.dataAdapter,
+        options.dataAdapterDecorators
+      );
     }
 
     if (options.resultsAdapter == null) {
@@ -132,6 +137,11 @@ define([
           TagsSearchHighlight
         );
       }
+
+      options.resultsAdapter = this._decorateAdapter(
+        options.resultsAdapter,
+        options.resultsAdapterDecorators
+      );
     }
 
     if (options.dropdownAdapter == null) {
@@ -167,6 +177,11 @@ define([
       options.dropdownAdapter = Utils.Decorate(
         options.dropdownAdapter,
         AttachBody
+      );
+
+      options.dropdownAdapter = this._decorateAdapter(
+        options.dropdownAdapter,
+        options.dropdownAdapterDecorators
       );
     }
 
@@ -209,6 +224,11 @@ define([
       options.selectionAdapter = Utils.Decorate(
         options.selectionAdapter,
         EventRelay
+      );
+
+      options.selectionAdapter = this._decorateAdapter(
+        options.selectionAdapter,
+        options.selectionAdapterDecorators
       );
     }
 
@@ -418,6 +438,16 @@ define([
     }
 
     return translations;
+  };
+
+  Defaults.prototype._decorateAdapter = function (adapter, decorators) {
+    if(decorators instanceof Array)
+    {
+      decorators.forEach(function(decorator) {
+        adapter = Utils.Decorate(adapter, decorator);
+      });
+    }
+    return adapter;
   };
 
   Defaults.prototype.set = function (key, value) {
