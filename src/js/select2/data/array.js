@@ -18,14 +18,8 @@ define([
   };
 
   ArrayAdapter.prototype.select = function (data) {
-    var $option = this.$element.find('option').filter(function (i, elm) {
-      return elm.value == data.id.toString();
-    });
-
-    if ($option.length === 0) {
-      $option = this.option(data);
-
-      this.addOptions($option);
+    if (!data.element) {
+      this.addOptions(this.option(data));
     }
 
     ArrayAdapter.__super__.select.call(this, data);
@@ -68,9 +62,11 @@ define([
       var $option = this.option(item);
 
       if (item.children) {
-        var $children = this.convertToOptions(item.children);
-
-        $option.append($children);
+        item.children.forEach(function(child, index, children) {
+          var $child = self.convertToOptions([child]);
+          children[index] = self.item($child[0]);
+          $option.append($child);
+        })
       }
 
       $options.push($option);
